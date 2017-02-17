@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			.md_lunbo{
+				border:1px solid black;
+				position: relative;
+			}
+			.md_lunbo .md_lunbo_info b{
+				height: 30px;
+				line-height: 30px;
+				width: 100%;
+				display: block;
+				background-color: rgba(0,0,0,0.3);
+				position: absolute;
+				bottom: 0;
+				text-align: center;
+				color: white;
+			}
+			.md_lunbo img{
+				width: 100%;
+				height: 100%;
+				cursor: pointer;
+			}
+			.show{
+				display: block;
+			}
+			.none{
+				display: none;
+			}
+			.index_num{
+				text-align: right;
+				font-size: 0;
+				height: 20px;position: absolute;
+				right: 0;
+				bottom: 35px;
+			}
+			.index_num a{
+				font-size: 14px;
+				display: inline-block;
+				width: 20px;
+				height: 20px;
+				text-align: center;
+				background-color: #555;
+				color: white;
+				margin-left: 2px;
+				cursor: pointer;
+				z-index: 1000;
+			}
+			.index_num a.index_num_active{
+				background-color: #71C20E;
+			}
+		</style>	
+	</head>
+
+	<body>
+		<div class="md_lunbo" id="md_lunbo">
+			<div class="index_num" id="index_num">
+				<a class="index_num_active">1</a>
+				<a>2</a>
+				<a>3</a>
+				<a>4</a>
+				<a>5</a>
+			</div>
+		</div>
+		<script src="jquery-1.11.3.js"></script>
+		<script>
+		     var data=[//模拟后台传输的数据~~这些肯定是动态获取的~
+		     	  ["img/gou.png","我是广告文字"],
+		     	  ["img/ji.png","我是广告文字2"],
+		     	  ["img/niu.png","我是广告文字3"],
+		     	  ["img/shu.png","我是广告文字4"],
+		     	 ["img/zhu.png","我是广告文字5"],
+		     ];
+		     function Md_lunbo(width,height,time){
+				this.width=width+"px";
+				this.height=height+"px";
+				this.time=time*1000;
+			};
+		     Md_lunbo.prototype.init=function(){//轮播初始化方法
+		     	var  $info='<div class="md_lunbo_info"><img src="'+data[0][0]+'"/><b>'+data[0][1]+'</b></div>';
+		     	$("#md_lunbo").append($info);
+		     	$("#md_lunbo").css("width",this.width).css("height",this.height);
+		     	$("#md_lunbo .md_lunbo_info").css("width",this.width).css("height",this.height);
+		     };
+		     
+		     Md_lunbo.prototype.lunbo=function(){////轮播循环方法/
+                var num=0;
+                var time=this.time;
+		     	function _lunbo(){//循环逻辑
+                    $("#md_lunbo img").fadeOut(200,function(){
+                       $(this).attr("src",data[num][0]).fadeIn(200);
+                       $("#md_lunbo b").text(data[num][1]);
+		     		   $("#index_num a").eq(num).addClass("index_num_active").siblings().removeClass("index_num_active");
+                      })
+		     		num++;
+		     		if(num==5) num=0;
+		     	};
+		     	var timer= setInterval(_lunbo,this.time);
+		     	 $("#index_num a").click(function(){//点击小图标逻辑
+		     	 	 clearInterval(timer);
+		      	     var $index=$(this).index();
+		      	     $("#md_lunbo b").text(data[$index][1]);
+                      $("#md_lunbo img").fadeOut(200,function(){
+                        $(this).attr("src",data[$index][0]).fadeIn(200);
+                        $("#md_lunbo b").text(data[$index][1]);
+		     		    $("#index_num a").eq($index).addClass("index_num_active").siblings().removeClass("index_num_active");
+                      })
+		      	     num=$index;
+		      	     timer= setInterval(_lunbo,time);
+		      	   })
+		     };
+			var lunbo1=new Md_lunbo(300,200,3);//构造函数实例化.宽、高、间隔时间
+			lunbo1.init();//轮播初始化方法
+			lunbo1.lunbo();//轮播循环方法
+		</script>
+	</body>
+
+</html>
